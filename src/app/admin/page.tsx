@@ -1,14 +1,27 @@
-import { supabase, type Application } from "@/lib/supabase";
+import { getSupabase, type Application } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const { data, error } = await supabase
-    .from("applications")
-    .select("*")
-    .order("created_at", { ascending: false });
+  let applications: Application[] = [];
+  let errorMessage: string | null = null;
 
-  const applications = (data ?? []) as Application[];
+  try {
+    const { data, error } = await getSupabase()
+      .from("applications")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      errorMessage = error.message;
+    } else {
+      applications = (data ?? []) as Application[];
+    }
+  } catch (err) {
+    errorMessage =
+      err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
+  }
+
   const total = applications.length;
 
   return (
@@ -31,9 +44,9 @@ export default async function AdminPage() {
           <span className="text-sm font-medium text-gray-500">명</span>
         </div>
 
-        {error && (
+        {errorMessage && (
           <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-            신청 내역을 불러오는 중 오류가 발생했습니다: {error.message}
+            신청 내역을 불러오는 중 오류가 발생했습니다: {errorMessage}
           </p>
         )}
 
@@ -61,7 +74,7 @@ export default async function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {applications.length === 0 && !error ? (
+                {applications.length === 0 && !errorMessage ? (
                   <tr>
                     <td
                       colSpan={6}
