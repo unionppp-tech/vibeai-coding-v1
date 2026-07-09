@@ -2,10 +2,8 @@
 
 import { useActionState } from "react";
 import { COURSE_OPTIONS } from "@/lib/supabase";
-import {
-  initialApplicationFormState,
-  submitApplication,
-} from "./actions";
+import { initialApplicationFormState } from "@/lib/application-form";
+import { submitApplication } from "./actions";
 
 export default function Home() {
   const [state, formAction, pending] = useActionState(

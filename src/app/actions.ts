@@ -1,15 +1,7 @@
 "use server";
 
 import { COURSE_OPTIONS, getSupabase, type Course } from "@/lib/supabase";
-
-export type ApplicationFormState = {
-  status: "idle" | "success" | "error";
-  message?: string;
-};
-
-export const initialApplicationFormState: ApplicationFormState = {
-  status: "idle",
-};
+import type { ApplicationFormState } from "@/lib/application-form";
 
 export async function submitApplication(
   _prevState: ApplicationFormState,
